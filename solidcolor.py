@@ -121,18 +121,21 @@ def imgtostring():
 import PyPDF2
 
 
-def checkValidDocument():
+def checkValidDocument(table_name=None):
     db = db_connect("localhost", "c4c", "paradise", "railway_recruit")
-    sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM `bachleors_kanun_adikrit` ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='Bachelors')"
+    table_name = 'bachleors_kanun_adikrit'
+    sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='Bachelors')".format(
+        table_name=table_name)
     cursor = db.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
-    somebool = checkDocumentExistence(result, db)
+    table_name = 'bachleors_kanun_adikrit'
+    somebool = checkDocumentExistence(result, db, table_name)
     print('all is okay')
     return True
 
 
-def checkDocumentExistence(result, db):
+def checkDocumentExistence(result, db, table_name):
     for x in result:
         print("i am document")
         domain = "https://nepalrailway.org/"
@@ -153,26 +156,25 @@ def checkDocumentExistence(result, db):
                 pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
                 print('after creating  pdf object')
                 cursor = db.cursor()
-                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc ok', status=1 WHERE id =" + str(apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=0 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id)
                 cursor.execute(sql)
                 db.commit()
-
 
             except:
                 print('exception occurred pdf is not valid')
-
                 cursor = db.cursor()
-                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc not accessible' WHERE id ="+str(apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc not accessible', status=1 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id)
                 cursor.execute(sql)
                 db.commit()
-
-
 
         else:
             try:
                 print('in try block of image')
                 cursor = db.cursor()
-                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc ok', status=1 WHERE id ="+str(apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=0 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id)
                 cursor.execute(sql)
                 db.commit()
                 img = Image.open(temp_filename)
@@ -182,7 +184,8 @@ def checkDocumentExistence(result, db):
                 print('in except block of image')
                 print('image is not readable')
                 cursor = db.cursor()
-                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc not accessible' WHERE id ="+str(apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=1 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id)
                 cursor.execute(sql)
                 db.commit()
     return True

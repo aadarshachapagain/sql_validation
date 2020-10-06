@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6e429750-e818-4953-8319-3d8fae4d6260" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/checkimage.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/solidcolor.py" beforeDir="false" afterPath="$PROJECT_DIR$/solidcolor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp_file.JPG" beforeDir="false" afterPath="$PROJECT_DIR$/temp_file.JPG" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/solidcolor.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="214">
-              <caret line="188" lean-forward="true" selection-start-line="188" selection-end-line="188" />
+              <caret line="131" column="42" lean-forward="true" selection-start-line="131" selection-start-column="42" selection-end-line="131" selection-end-column="42" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -106,12 +105,12 @@
       <workItem from="1601616329989" duration="642000" />
       <workItem from="1601689908460" duration="3177000" />
       <workItem from="1601792700920" duration="3322000" />
-      <workItem from="1601959770336" duration="6060000" />
+      <workItem from="1601959770336" duration="7403000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15460000" />
+    <option name="totallyTimeSpent" value="16803000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="824" extended-state="0" />
@@ -131,7 +130,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.4502104" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.39130434" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -189,7 +188,7 @@
     <entry file="file://$PROJECT_DIR$/solidcolor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="214">
-          <caret line="188" lean-forward="true" selection-start-line="188" selection-end-line="188" />
+          <caret line="131" column="42" lean-forward="true" selection-start-line="131" selection-start-column="42" selection-end-line="131" selection-end-column="42" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
