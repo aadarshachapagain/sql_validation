@@ -1,16 +1,16 @@
 from PIL import Image
 import mysql.connector
-
-
+import pytesseract
 
 
 def db_connect(host, user, password, database):
     db = mysql.connector.connect(
         host=host,
-        user="user",
-        password="password",
-        database="database"
+        user=user,
+        password=password,
+        database=database
     )
+    print("db connected") if db else print("db not connected")
     return db
 
 
@@ -72,7 +72,7 @@ def check():
         host="localhost",
         user="c4c",
         password="paradise",
-        database="bigsafar_dev_corrupt"
+        database="railway_recruit"
     )
     print(db)
 
@@ -88,3 +88,104 @@ def check():
     return True
 
 
+from urllib.request import urlretrieve
+
+
+def imgtostring():
+    # mixed_img = Image.open("./images/slc.jpg")
+    # mixed_img = Image.open("https://nepalrailway.org/applicants/document/2020-09-14-06-50-14-SLC-(2).jpg")
+    # extrema_mixed = mixed_img.convert("L")
+    URL = "https://nepalrailway.org/applicants/document/2020-09-14-06-50-14-SLC-(2).jpg"
+    # Image.open('./images/slc.jpg')
+    # import urllib, cStringIO
+    # urlretrieve('https://nepalrailway.org/applicants/document/2020-09-14-06-50-14-SLC-(2).jpg',
+    #             'file.jpg')
+    #
+    # Open a pdf file
+
+    # file = cStringIO.StringIO(urllib.urlopen(URL).read())
+    # img = Image.open('file.jpg')
+    corrupt_pdf = "https://nepalrailway.org/applicants/document/2020-09-28-10-59-11-Bachelor-mark-sweet-.pdf"
+    urlretrieve("https://nepalrailway.org/applicants/document/2020-09-28-10-59-11-Bachelor-mark-sweet-.pdf",
+                'file2.pdf')
+    try:
+        pdfFileObj = open('file2.pdf', 'rb')
+    except:
+        print('exception occurred')
+
+    # print(pytesseract.image_to_string(extrema_mixed))
+    # print(pytesseract.image_to_string(img, config="--psm 6"))
+    # pdfFileObj = open('example.pdf', 'rb')
+
+
+import PyPDF2
+
+
+def checkValidDocument():
+    db = db_connect("localhost", "c4c", "paradise", "railway_recruit")
+    sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM `bachleors_kanun_adikrit` ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='Bachelors')"
+    cursor = db.cursor()
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    somebool = checkDocumentExistence(result, db)
+    print('all is okay')
+    return True
+
+
+def checkDocumentExistence(result, db):
+    for x in result:
+        print("i am document")
+        domain = "https://nepalrailway.org/"
+        filepath = x[1]
+        fullpath = domain + filepath
+        filename, ext = (fullpath.split('/')[-1].split('.'))
+        print("name:{filename} and extension:{ext}".format(filename=filename, ext=ext))
+        temp_filename = "temp_file." + ext
+        # Download Image locally
+        urlretrieve(fullpath, temp_filename)
+        print("temp_filename:{temp_filename}".format(temp_filename=temp_filename))
+        print("id of apply post:{id}".format(id=x[5]))
+        apply_post_id = x[5]
+        if ext == "pdf":
+            try:
+                print("in try block")
+                pdfFileObj = open(temp_filename, 'rb')
+                pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
+                print('after creating  pdf object')
+                cursor = db.cursor()
+                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc ok', status=1 WHERE id =" + str(apply_post_id)
+                cursor.execute(sql)
+                db.commit()
+
+
+            except:
+                print('exception occurred pdf is not valid')
+
+                cursor = db.cursor()
+                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc not accessible' WHERE id ="+str(apply_post_id)
+                cursor.execute(sql)
+                db.commit()
+
+
+
+        else:
+            try:
+                print('in try block of image')
+                cursor = db.cursor()
+                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc ok', status=1 WHERE id ="+str(apply_post_id)
+                cursor.execute(sql)
+                db.commit()
+                img = Image.open(temp_filename)
+
+            except:
+                # image is not readable
+                print('in except block of image')
+                print('image is not readable')
+                cursor = db.cursor()
+                sql = "UPDATE bachleors_kanun_adikrit SET remarks = 'Bachleors doc not accessible' WHERE id ="+str(apply_post_id)
+                cursor.execute(sql)
+                db.commit()
+    return True
+
+
+checkValidDocument()
