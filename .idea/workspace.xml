@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6e429750-e818-4953-8319-3d8fae4d6260" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/solidcolor.py" beforeDir="false" afterPath="$PROJECT_DIR$/solidcolor.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp_file.JPG" beforeDir="false" afterPath="$PROJECT_DIR$/temp_file.JPG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/temp_file.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/temp_file.jpeg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp_file.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/temp_file.pdf" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +17,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/solidcolor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="181" column="62" lean-forward="true" selection-start-line="181" selection-start-column="62" selection-end-line="181" selection-end-column="62" />
+            <state relative-caret-position="103">
+              <caret line="175" column="16" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="16" />
               <folding>
                 <element signature="e#0#21#0" expanded="true" />
               </folding>
@@ -113,16 +112,15 @@
       <workItem from="1601689908460" duration="3177000" />
       <workItem from="1601792700920" duration="3322000" />
       <workItem from="1601959770336" duration="8515000" />
-      <workItem from="1602046536229" duration="7374000" />
+      <workItem from="1602046536229" duration="8236000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25289000" />
+    <option name="totallyTimeSpent" value="26151000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="824" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15994236" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -198,8 +196,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/solidcolor.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="181" column="62" lean-forward="true" selection-start-line="181" selection-start-column="62" selection-end-line="181" selection-end-column="62" />
+        <state relative-caret-position="103">
+          <caret line="175" column="16" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="16" />
           <folding>
             <element signature="e#0#21#0" expanded="true" />
           </folding>
