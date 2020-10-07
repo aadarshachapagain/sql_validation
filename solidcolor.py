@@ -14,8 +14,9 @@ def db_connect(host, user, password, database):
     return db
 
 
-def is_solid_image(path):
-    img = Image.open(path)
+def is_solid_image():
+    img = Image.open('temp_file.JPG')
+    print('image opened')
     # Convert to grey scale and get extreme point which is tuple
     extremes = img.convert("L").getextrema()
     if extremes[0] == extremes[1]:
@@ -123,72 +124,111 @@ import PyPDF2
 
 def checkValidDocument(table_name=None):
     db = db_connect("localhost", "c4c", "paradise", "railway_recruit")
-    table_name = 'bachleors_kanun_adikrit'
-    sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='Bachelors')".format(
-        table_name=table_name)
+    # table_name = 'bachleors_kanun_adikrit'
+    no_level = ''
+
     cursor = db.cursor()
-    cursor.execute(sql)
-    result = cursor.fetchall()
-    table_name = 'bachleors_kanun_adikrit'
-    somebool = checkDocumentExistence(result, db, table_name)
-    print('all is okay')
+    # table_name = 'bachleors_kanun_adikrit'
+    # vacant_post_id = 2
+    table_name = 'bachleors_station_master'
+    vacant_post_id = 3
+
+    """ Bachleors"""
+    level_bach = 'Bachelors'
+    bach_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id={vacant_post_id} and (ei.level ='{level_bach}')".format(
+        table_name=table_name, level_bach=level_bach, vacant_post_id=vacant_post_id)
+    cursor.execute(bach_sql)
+    result_bach = cursor.fetchall()
+
+    """ Bachleors"""
+
+    """ Plus2"""
+    level_alevel = 'A-LeveL'
+    level_plus2 = '+2/PCL'
+    plus2_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='{level_alevel}' or ei.level='{level_plus2}')".format(
+        table_name=table_name, level_alevel=level_alevel, level_plus2=level_plus2)
+    cursor.execute(plus2_sql)
+    result_plus2 = cursor.fetchall()
+    """ Plus2"""
+
+    """ SlC"""
+    level_see = 'SEE'
+    level_slc = 'SLC'
+    level_olevel = 'O-LeveL'
+    slc_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='{level_see}' or ei.level='{level_slc}' or ei.level='{level_olevel}')".format(
+        table_name=table_name, level_see=level_see, level_slc=level_slc, level_olevel=level_olevel)
+    cursor.execute(slc_sql)
+    result_slc = cursor.fetchall()
+    """ SlC"""
+
+    slc_somebool = checkDocumentExistence(result_bach, db, table_name, level_slc)
+    plus2_somebool = checkDocumentExistence(result_plus2, db, table_name, level_plus2)
+    bach_somebool = checkDocumentExistence(result_slc, db, table_name, level_bach)
+
+    print('Processing is Completed')
     return True
 
 
-def checkDocumentExistence(result, db, table_name):
+def checkDocumentExistence(result, db, table_name, level):
     for x in result:
         print("i am document")
         domain = "https://nepalrailway.org/"
         filepath = x[1]
         fullpath = domain + filepath
-        filename, ext = (fullpath.split('/')[-1].split('.'))
+        filestring = (fullpath.split('.'))
+        filename = filestring[:-1]
+        ext = filestring[-1]
+        # filename, ext = (fullpath.split('/')[-1].split('.'))
         print("name:{filename} and extension:{ext}".format(filename=filename, ext=ext))
         temp_filename = "temp_file." + ext
         # Download Image locally
         urlretrieve(fullpath, temp_filename)
+        # temp_filename = 'temp_file.JPG'
+        # ext = 'JPG'
         print("temp_filename:{temp_filename}".format(temp_filename=temp_filename))
         print("id of apply post:{id}".format(id=x[5]))
         apply_post_id = x[5]
         if ext == "pdf":
             try:
-                print("in try block")
+                print("in try block of pdf level:{level}".format(level=level))
                 pdfFileObj = open(temp_filename, 'rb')
                 pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
                 print('after creating  pdf object')
                 cursor = db.cursor()
-                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=0 WHERE id ={apply_post_id}".format(
-                    table_name=table_name, apply_post_id=apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = '{level} doc ok' WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id, level=level)
                 cursor.execute(sql)
                 db.commit()
 
             except:
-                print('exception occurred pdf is not valid')
+                print('exception occurred pdf is not valid level:{level}'.format(level=level))
                 cursor = db.cursor()
-                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc not accessible', status=1 WHERE id ={apply_post_id}".format(
-                    table_name=table_name, apply_post_id=apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = '{level} doc not accessible', status=status+1 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id, level=level)
                 cursor.execute(sql)
                 db.commit()
-
         else:
             try:
-                print('in try block of image')
+                print("temp_filename:{temp_filename}".format(temp_filename=temp_filename))
+                img = Image.open(temp_filename)
+                print('in try block of image level:{level}'.format(level=level))
                 cursor = db.cursor()
-                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=0 WHERE id ={apply_post_id}".format(
-                    table_name=table_name, apply_post_id=apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = '{level} doc ok' WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id, level=level)
                 cursor.execute(sql)
                 db.commit()
-                img = Image.open(temp_filename)
 
             except:
                 # image is not readable
                 print('in except block of image')
-                print('image is not readable')
+                print('image is not readable level:{level}'.format(level=level))
                 cursor = db.cursor()
-                sql = "UPDATE {table_name} SET remarks = 'Bachleors doc ok', status=1 WHERE id ={apply_post_id}".format(
-                    table_name=table_name, apply_post_id=apply_post_id)
+                sql = "UPDATE {table_name} SET remarks = '{level} doc ok', status=status+1 WHERE id ={apply_post_id}".format(
+                    table_name=table_name, apply_post_id=apply_post_id, level=level)
                 cursor.execute(sql)
                 db.commit()
     return True
 
 
 checkValidDocument()
+# is_solid_image()
