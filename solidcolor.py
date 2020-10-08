@@ -135,7 +135,9 @@ def checkValidDocument(table_name=None):
 
     """ Bachleors"""
     level_bach = 'Bachelors'
-    bach_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id={vacant_post_id} and (ei.level ='{level_bach}')".format(
+    bach_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade" \
+               " FROM {table_name} ap,`education_infos` ei" \
+               " WHERE ap.id=ei.apply_post_id and ap.vacant_post_id={vacant_post_id} and (ei.level ='{level_bach}')".format(
         table_name=table_name, level_bach=level_bach, vacant_post_id=vacant_post_id)
     cursor.execute(bach_sql)
     result_bach = cursor.fetchall()
@@ -145,8 +147,10 @@ def checkValidDocument(table_name=None):
     """ Plus2"""
     level_alevel = 'A-LeveL'
     level_plus2 = '+2/PCL'
-    plus2_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='{level_alevel}' or ei.level='{level_plus2}')".format(
-        table_name=table_name, level_alevel=level_alevel, level_plus2=level_plus2)
+    plus2_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade" \
+                " FROM {table_name} ap,`education_infos` ei" \
+                " WHERE ap.id=ei.apply_post_id and ap.vacant_post_id={vacant_post_id} and (ei.level ='{level_alevel}' or ei.level='{level_plus2}')".format(
+        table_name=table_name, level_alevel=level_alevel, level_plus2=level_plus2,vacant_post_id=vacant_post_id)
     cursor.execute(plus2_sql)
     result_plus2 = cursor.fetchall()
     """ Plus2"""
@@ -155,8 +159,10 @@ def checkValidDocument(table_name=None):
     level_see = 'SEE'
     level_slc = 'SLC'
     level_olevel = 'O-LeveL'
-    slc_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade FROM {table_name} ap,`education_infos` ei WHERE ap.id=ei.apply_post_id and ap.vacant_post_id=2 and (ei.level ='{level_see}' or ei.level='{level_slc}' or ei.level='{level_olevel}')".format(
-        table_name=table_name, level_see=level_see, level_slc=level_slc, level_olevel=level_olevel)
+    slc_sql = "SELECT Distinct ap.post, ei.document as academics, ei.board,ei.equivalance, ei.apply_post_id, ap.id,ap.vacant_post_id, ei.level,ei.grade" \
+              " FROM {table_name} ap,`education_infos` ei" \
+              " WHERE ap.id=ei.apply_post_id and ap.vacant_post_id={vacant_post_id} and (ei.level ='{level_see}' or ei.level='{level_slc}' or ei.level='{level_olevel}')".format(
+        table_name=table_name, level_see=level_see, level_slc=level_slc, level_olevel=level_olevel,vacant_post_id=vacant_post_id)
     cursor.execute(slc_sql)
     result_slc = cursor.fetchall()
     """ SlC"""
@@ -291,14 +297,14 @@ def check_final():
     fullpath = domain + cleaned_filepath
     print('fullpath')
     print(fullpath)
-    urlretrieve(fullpath, 'check.'+ext)
+    urlretrieve(fullpath, 'check.' + ext)
 
     # urllib.parse.unquote(newpath)
     # cleaned_filepath = urllib.parse.unquote(filepath)
     return True
 
 
-# checkValidDocument()
+checkValidDocument()
 # test_string()
 # check_final()
 # is_solid_image()
