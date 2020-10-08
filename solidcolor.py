@@ -1,6 +1,12 @@
 from PIL import Image
 import mysql.connector
 import pytesseract
+from urllib.request import urlretrieve
+# from urllib.parse import urlparse
+import urllib.parse
+# from urllib.parse import unquote
+from urllib.parse import unquote_to_bytes
+import PyPDF2
 
 
 def db_connect(host, user, password, database):
@@ -89,9 +95,6 @@ def check():
     return True
 
 
-from urllib.request import urlretrieve
-
-
 def imgtostring():
     # mixed_img = Image.open("./images/slc.jpg")
     # mixed_img = Image.open("https://nepalrailway.org/applicants/document/2020-09-14-06-50-14-SLC-(2).jpg")
@@ -117,9 +120,6 @@ def imgtostring():
     # print(pytesseract.image_to_string(extrema_mixed))
     # print(pytesseract.image_to_string(img, config="--psm 6"))
     # pdfFileObj = open('example.pdf', 'rb')
-
-
-import PyPDF2
 
 
 def checkValidDocument(table_name=None):
@@ -174,10 +174,12 @@ def checkDocumentExistence(result, db, table_name, level):
         print("i am document")
         domain = "https://nepalrailway.org/"
         filepath = x[1]
-        fullpath = domain + filepath
-        filestring = (fullpath.split('.'))
+        filestring = (filepath.split('.'))
         filename = filestring[:-1]
         ext = filestring[-1]
+        cleaned_filepath = urllib.parse.quote(filepath)
+        fullpath = domain + cleaned_filepath
+
         # filename, ext = (fullpath.split('/')[-1].split('.'))
         print("name:{filename} and extension:{ext}".format(filename=filename, ext=ext))
         temp_filename = "temp_file." + ext
@@ -223,12 +225,80 @@ def checkDocumentExistence(result, db, table_name, level):
                 print('in except block of image')
                 print('image is not readable level:{level}'.format(level=level))
                 cursor = db.cursor()
-                sql = "UPDATE {table_name} SET remarks = '{level} doc ok', status=status+1 WHERE id ={apply_post_id}".format(
+                sql = "UPDATE {table_name} SET remarks = '{level} doc not ok', status=status+1 WHERE id ={apply_post_id}".format(
                     table_name=table_name, apply_post_id=apply_post_id, level=level)
                 cursor.execute(sql)
                 db.commit()
     return True
 
 
-checkValidDocument()
+def test_string():
+    teststring = "applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    filestring = (teststring.split('.'))
+    filename = filestring[:-1]
+    ext = filestring[-1]
+    secondhalf = "/applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    print("filename:{filename},ext:{ext}".format(filename=filename, ext=ext))
+    "/applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    fullpath = "https://nepalrailway.org//applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    "https://nepalrailway.org//applicants/document/2020-09-18-06-28-32-+%E0%A5%A8-transcript.png"
+    # "https://nepalrailway.org//applicants/document/2020-09-18-06-28-32-+%E0%A5%A8-transcript.png"
+    # newpath=fullpath.encode('ascii', 'ignore')
+    # newpath = urlparse(fullpath)
+    # newpath = unquote(fullpath, encoding='utf-8')
+    # newpath = unquote(fullpath)
+    # newpath = unquote_to_bytes(fullpath)
+    # print(newpath)
+    import urllib.parse
+    # urllib.parse.unquote(url)
+    # encodedurl = fullpath.encode('ascii','replace')
+    # print(encodedurl)
+    print('encodedurl')
+
+    newpath = urllib.parse.quote(secondhalf)
+    firsthalf = "https://nepalrailway.org"
+    fullpath = firsthalf + newpath
+    newpath_again = urllib.parse.unquote(newpath)
+    print('newpath')
+    print(fullpath)
+    print('newpath_again')
+    print(newpath_again)
+
+    # urlretrieve(fullpath, 'newfile.png')
+    # "https://nepalrailway.org//applicants/document/2020-09-18-06-28-32-+%E0%A5%A8-transcript.png"
+    print("i am document")
+    domain = "https://nepalrailway.org/"
+    filepath = "/applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    filestring = (filepath.split('.'))
+    filename = filestring[:-1]
+    ext = filestring[-1]
+    # urllib.parse.unquote(newpath)
+    # cleaned_filepath = urllib.parse.unquote(filepath)
+    cleaned_filepath = urllib.parse.unquote(filepath)
+    fullpath = domain + cleaned_filepath
+    return True
+
+
+def check_final():
+    print("i am document")
+    domain = "https://nepalrailway.org/"
+    filepath = "/applicants/document/2020-09-18-06-28-32-+२-transcript.png"
+    filestring = (filepath.split('.'))
+    filename = filestring[:-1]
+    ext = filestring[-1]
+    print("ext:{ext}, filename={filename}".format(ext=ext, filename=filename))
+    cleaned_filepath = urllib.parse.quote(filepath)
+    fullpath = domain + cleaned_filepath
+    print('fullpath')
+    print(fullpath)
+    urlretrieve(fullpath, 'check.'+ext)
+
+    # urllib.parse.unquote(newpath)
+    # cleaned_filepath = urllib.parse.unquote(filepath)
+    return True
+
+
+# checkValidDocument()
+# test_string()
+# check_final()
 # is_solid_image()
